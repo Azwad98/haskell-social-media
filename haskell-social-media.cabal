@@ -25,7 +25,11 @@ source-repository head
 
 library
   exposed-modules:
+      ConcurrentUtils
       Lib
+      Message
+      Types
+      User
   other-modules:
       Paths_haskell_social_media
   autogen-modules:
