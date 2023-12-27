@@ -10,7 +10,7 @@ import Types
 -- | Generate a random delay.
 randomDelay :: IO ()
 randomDelay = do
-    delay <- randomRIO (1000000, 5000000)  -- Random delay between 1 and 5 seconds
+    delay <- randomRIO (100000, 500000)  -- Random delay between 1 and 5 seconds
     threadDelay delay
 
 -- | Generate a random message.
