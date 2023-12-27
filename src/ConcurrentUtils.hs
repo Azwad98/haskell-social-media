@@ -20,6 +20,15 @@ randomMessage = do
     index <- randomRIO (0, length messages - 1)
     return $ messages !! index
 
+-- | Simulates sending a message from one user to another and prints the action.
+simulateMessageSending :: MVar User -> MVar User -> String -> IO ()
+simulateMessageSending senderMVar receiverMVar content = do
+    sender <- readMVar senderMVar
+    receiver <- readMVar receiverMVar
+
+    putStrLn $ username sender ++ " opened a chat with " ++ username receiver ++ ". " ++ username sender ++ " is typing... Message: \"" ++ content ++ "\""
+    sendMessage receiverMVar (createMessage content)
+
 -- | Function to run in each user thread with a message limit.
 userThreadLimited :: MVar User -> [MVar User] -> MVar Int -> Int -> IO ()
 userThreadLimited userMVar otherUsers messageCounter limit = do
@@ -29,7 +38,7 @@ userThreadLimited userMVar otherUsers messageCounter limit = do
             randomDelay
             message <- randomMessage
             receiverMVar <- selectRandomUser otherUsers
-            sendMessage receiverMVar (createMessage message)
+            simulateMessageSending userMVar receiverMVar message
             putMVar messageCounter (currentCount + 1)
         when (currentCount >= limit) $ do
             putMVar messageCounter currentCount
