@@ -11,3 +11,9 @@ spec = do
       let content = "test message"
       let message = createMessage content
       messageContent message `shouldBe` content
+
+  describe "displayMessageString" $ do
+    it "displays the content of a given message" $ do
+      let content = "test message"
+      let message = createMessage content
+      displayMessageString message `shouldBe` content
