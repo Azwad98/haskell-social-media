@@ -20,11 +20,12 @@ spec = do
     -- Test for sendMessage function
     describe "sendMessage" $ do
       it "sends a message to a user" $ do
-        userMVar <- createUser "Bob"
-        let msg = createMessage "Hello, Bob!"
-        sendMessage userMVar msg
-        user <- readMVar userMVar
-        length (messages user) `shouldBe` 1
+        senderMVar <- createUser "Alice"
+        receiverMVar <- createUser "Bob"
+        let msg = createMessage "Alice" "Hello, Bob!"
+        sendMessage "Alice" receiverMVar msg
+        receiver <- readMVar receiverMVar
+        length (messages receiver) `shouldBe` 1
 
     -- Test for readUser function
     describe "readUser" $ do
@@ -35,12 +36,13 @@ spec = do
 
     -- Test for displayUserMessages function
     describe "displayUserMessages" $ do
-      it "displays all messages of a user" $ do
-        userMVar <- createUser "Dave"
-        let msg = createMessage "Hello, Dave!"
-        sendMessage userMVar msg
-        messagesStr <- displayUserMessages userMVar
-        messagesStr `shouldBe` "Hello, Dave!\n"
+      it "displays all messages of a user including the sender's name" $ do
+        senderMVar <- createUser "Alice"
+        receiverMVar <- createUser "Dave"
+        let msg = createMessage "Alice" "Hello, Dave!"
+        sendMessage "Alice" receiverMVar msg
+        messagesStr <- displayUserMessages receiverMVar
+        messagesStr `shouldBe` "New Message from Alice: \"Hello, Dave!\"\n"
 
     -- Test for messageCount function
     describe "messageCount" $ do
