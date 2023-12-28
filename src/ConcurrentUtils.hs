@@ -27,9 +27,14 @@ simulateMessageSending senderMVar receiverMVar content = do
     sender <- readMVar senderMVar
     receiver <- readMVar receiverMVar
 
-    let formattedMessage = printf "%-10s opened a chat with %-10s  %-10s is typing...      Message: \"%s\"" (username sender) (username receiver) (username sender) content
+    let formattedMessage = printf "%-10s opened a chat with %-10s  %-10s is typing...      Message: \"%s\"" 
+                           (username sender) 
+                           (username receiver) 
+                           (username sender) 
+                           content
     putStrLn formattedMessage
-    sendMessage receiverMVar (createMessage content)
+    -- Updated call to sendMessage with sender's name
+    sendMessage (username sender) receiverMVar (createMessage (username sender) content)
 
 -- | Function to run in each user thread with a message limit.
 userThreadLimited :: MVar User -> [MVar User] -> MVar Int -> Int -> IO ()

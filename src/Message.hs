@@ -2,12 +2,10 @@ module Message where
 
 import Types
 
--- | Create a new message with some content.
--- The function takes a string which will be the content of the message.
-createMessage :: String -> Message
-createMessage content = Message content
+-- | Create a new message with a sender and content.
+createMessage :: String -> String -> Message
+createMessage sender content = Message sender content
 
 -- | Displays the content of a message.
--- The function takes a 'Message' and returns the content as a 'String'.
 displayMessageString :: Message -> String
-displayMessageString (Message content) = content
+displayMessageString (Message _ content) = content
