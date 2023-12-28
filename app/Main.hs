@@ -31,9 +31,11 @@ main = do
     -- Wait until 100 messages are sent
     waitForMessages messageCounter messageLimit
 
+    putStrLn "--------------------------------------------"
     putStrLn "Messages received by each user:"
     mapM_ (\userMVar -> do
         user <- readMVar userMVar
         count <- messageCount userMVar
         putStrLn $ username user ++ ": " ++ show count
         ) users
+    putStrLn "--------------------------------------------"

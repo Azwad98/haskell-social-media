@@ -1,11 +1,12 @@
 module ConcurrentUtils where
 
-import Control.Concurrent (MVar, takeMVar, putMVar, readMVar, forkIO, threadDelay)
+import Control.Concurrent (MVar, takeMVar, putMVar, readMVar, threadDelay)
 import Control.Monad (forever, when)
 import System.Random (randomRIO)
 import User
 import Message
 import Types
+import Text.Printf (printf)
 
 -- | Generate a random delay.
 randomDelay :: IO ()
@@ -26,7 +27,8 @@ simulateMessageSending senderMVar receiverMVar content = do
     sender <- readMVar senderMVar
     receiver <- readMVar receiverMVar
 
-    putStrLn $ username sender ++ " opened a chat with " ++ username receiver ++ ". " ++ username sender ++ " is typing... Message: \"" ++ content ++ "\""
+    let formattedMessage = printf "%-10s opened a chat with %-10s  %-10s is typing...      Message: \"%s\"" (username sender) (username receiver) (username sender) content
+    putStrLn formattedMessage
     sendMessage receiverMVar (createMessage content)
 
 -- | Function to run in each user thread with a message limit.
