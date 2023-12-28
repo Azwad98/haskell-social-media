@@ -1,3 +1,5 @@
+-- | Module      : Module for concurrency utilities in the Haskell Social Media application.
+-- Description : This module includes functions for simulating message sending, user actions, and managing concurrent processes.
 module ConcurrentUtils where
 
 import Control.Concurrent (MVar, takeMVar, putMVar, readMVar, threadDelay)
@@ -7,14 +9,15 @@ import User
 import Message
 import Types
 import Text.Printf (printf)
+import Utils (unwrapUsername)
 
 -- | Generate a random delay.
 randomDelay :: IO ()
 randomDelay = do
-    delay <- randomRIO (100000, 500000)  -- Random delay between 1 and 5 seconds
+    delay <- randomRIO (100000, 500000)
     threadDelay delay
 
--- | Generate a random message.
+-- | Generate a random message from a prefixed set.
 randomMessage :: IO String
 randomMessage = do
     let messages = ["Hi there!", "Hello!", "How are you?", "Good day!", "Nice to meet you!"]
@@ -28,13 +31,12 @@ simulateMessageSending senderMVar receiverMVar content = do
     receiver <- readMVar receiverMVar
 
     let formattedMessage = printf "%-10s opened a chat with %-10s  %-10s is typing...      Message: \"%s\"" 
-                           (username sender) 
-                           (username receiver) 
-                           (username sender) 
+                           (unwrapUsername $ username sender) 
+                           (unwrapUsername $ username receiver) 
+                           (unwrapUsername $ username sender) 
                            content
     putStrLn formattedMessage
-    -- Updated call to sendMessage with sender's name
-    sendMessage (username sender) receiverMVar (createMessage (username sender) content)
+    sendMessage (unwrapUsername $ username sender) receiverMVar (createMessage (Sender $ unwrapUsername $ username sender) (Content content))
 
 -- | Function to run in each user thread with a message limit.
 userThreadLimited :: MVar User -> [MVar User] -> MVar Int -> Int -> IO ()

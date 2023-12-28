@@ -1,3 +1,5 @@
+-- | Module      : Module for user-related functionalities in the Haskell Social Media application.
+-- Description : This module defines functions for creating users, sending messages, and retrieving user information.
 module User where
 
 import Control.Concurrent (MVar, newMVar, takeMVar, putMVar, readMVar)
@@ -6,7 +8,7 @@ import Message
 
 -- | Create a new user with a given username.
 -- The function takes a 'String' representing the username and returns an 'MVar User'.
-createUser :: String -> IO (MVar User)
+createUser :: Username -> IO (MVar User)
 createUser name = newMVar $ User name []
 
 -- | Send a message to a user.

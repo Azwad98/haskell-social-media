@@ -1,3 +1,5 @@
+-- | Main module for the Haskell Social Media application.
+-- This module handles user interaction, user creation, and starts the message simulation.
 module Main where
 
 import Control.Concurrent
@@ -8,37 +10,39 @@ import Utils
 import Text.Read (readMaybe)
 import Control.Monad (when)
 
+-- | The 'main' function runs the entire application.
+-- It prompts the user for sign-up, creates users, and starts the message simulation.
 main :: IO ()
 main = do
 
     -- Ask if the user wants to sign up
-    signUpResponse <- prompt "Would you like to sign up to the social media? (y/n) "
+    signUpResponse <- prompt (Question "Would you like to sign up to the social media? (y/n) ")
     newUserMVar <- if signUpResponse `elem` ["y", "Y", "yes", "Yes"]
         then do
-            newName <- prompt "Enter your name: "
-            Just <$> createUser newName
+            newName <- prompt (Question "Enter your name: ")
+            Just <$> createUser (Username newName)
         else return Nothing
 
-    -- Function to prompt the user with a question and get a response.
-
-
-    -- Create users
-    aliceMVar <- createUser "Alice"
-    bobMVar <- createUser "Bob"
-    charlieMVar <- createUser "Charlie"
-    davidMVar <- createUser "David"
-    emmaMVar <- createUser "Emma"
-    frankMVar <- createUser "Frank"
-    graceMVar <- createUser "Grace"
-    henryMVar <- createUser "Henry"
-    ireneMVar <- createUser "Irene"
-    jackMVar <- createUser "Jack"
+    -- Create default users
+    aliceMVar <- createUser (Username "Alice")
+    bobMVar <- createUser (Username "Bob")
+    charlieMVar <- createUser (Username "Charlie")
+    davidMVar <- createUser (Username "David")
+    emmaMVar <- createUser (Username "Emma")
+    frankMVar <- createUser (Username "Frank")
+    graceMVar <- createUser (Username "Grace")
+    henryMVar <- createUser (Username "Henry")
+    ireneMVar <- createUser (Username "Irene")
+    jackMVar <- createUser (Username "Jack")
     
     -- Shared message counter
     messageCounter <- newMVar 0
 
+    -- Combine new user (if signed up) with base users
     let baseUsers = [aliceMVar, bobMVar, charlieMVar, davidMVar, emmaMVar, frankMVar, graceMVar, henryMVar, ireneMVar, jackMVar]
-    let users = maybe baseUsers (: baseUsers) newUserMVar  -- Add new user if signed up
+    let users = maybe baseUsers (: baseUsers) newUserMVar
+    
+    -- Set message limit to 100
     let messageLimit = 100
 
     -- Start a thread for each user
@@ -47,21 +51,23 @@ main = do
     -- Wait until 100 messages are sent
     waitForMessages messageCounter messageLimit
 
+    -- Display notifications for the new user (if signed up)
     case newUserMVar of
         Just mvar -> do
             count <- messageCount mvar
             putStrLn $ "You have " ++ show count ++ " new notifications. Would you like to view them?"
-            viewNotifs <- promptYesNo "Would you like to view them?"
+            viewNotifs <- promptYesNo (Question "Would you like to view them?")
             when viewNotifs $ do
                 messages <- displayUserMessages mvar
                 putStrLn messages
         Nothing -> return ()
 
+    -- Display summary of messages received by each user
     putStrLn "--------------------------------------------"
     putStrLn "Messages received by each user:"
     mapM_ (\userMVar -> do
         user <- readMVar userMVar
         count <- messageCount userMVar
-        putStrLn $ username user ++ ": " ++ show count
+        putStrLn $ unwrapUsername (username user) ++ ": " ++ show count
         ) users
     putStrLn "--------------------------------------------"
