@@ -29,6 +29,7 @@ library
       Message
       Types
       User
+      Utils
   other-modules:
       Paths_haskell_social_media
   autogen-modules:

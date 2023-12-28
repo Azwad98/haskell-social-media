@@ -4,24 +4,9 @@ import Control.Concurrent
 import User
 import ConcurrentUtils
 import Types
-import System.IO (hFlush, stdout)
+import Utils
 import Text.Read (readMaybe)
 import Control.Monad (when)
-
--- Function to prompt the user with a question and get a Yes/No response.
-promptYesNo :: String -> IO Bool
-promptYesNo question = do
-    putStr $ question ++ " (y/n) "
-    hFlush stdout
-    response <- getLine
-    return $ response `elem` ["y", "Y", "yes", "Yes"]
-
-
-prompt :: String -> IO String
-prompt question = do
-    putStr question
-    hFlush stdout
-    getLine
 
 main :: IO ()
 main = do
