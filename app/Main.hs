@@ -24,23 +24,13 @@ main = do
         else return Nothing
 
     -- Create default users
-    aliceMVar <- createUser (Username "Alice")
-    bobMVar <- createUser (Username "Bob")
-    charlieMVar <- createUser (Username "Charlie")
-    davidMVar <- createUser (Username "David")
-    emmaMVar <- createUser (Username "Emma")
-    frankMVar <- createUser (Username "Frank")
-    graceMVar <- createUser (Username "Grace")
-    henryMVar <- createUser (Username "Henry")
-    ireneMVar <- createUser (Username "Irene")
-    jackMVar <- createUser (Username "Jack")
+    randomUsers <- createRandomUsers
     
     -- Shared message counter
     messageCounter <- newMVar 0
 
     -- Combine new user (if signed up) with base users
-    let baseUsers = [aliceMVar, bobMVar, charlieMVar, davidMVar, emmaMVar, frankMVar, graceMVar, henryMVar, ireneMVar, jackMVar]
-    let users = maybe baseUsers (: baseUsers) newUserMVar
+    let users = maybe randomUsers (: baseUsers) newUserMVar
     
     -- Set message limit to 100
     let messageLimit = 100
