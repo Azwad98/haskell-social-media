@@ -13,8 +13,8 @@ createUser name = newMVar $ User name []
 
 -- | Send a message to a user.
 -- This function takes an 'MVar User' and a 'Message', modifies the 'User' safely, and updates the 'MVar'.
-sendMessage :: String -> MVar User -> Message -> IO ()
-sendMessage senderName receiverMVar msg = do
+sendMessage :: Username -> MVar User -> Message -> IO ()
+sendMessage (Username senderName) receiverMVar msg = do
     let newMsg = Message senderName (messageContent msg)  -- Include the sender's name
     receiver <- takeMVar receiverMVar
     let updatedReceiver = receiver { messages = newMsg : messages receiver }

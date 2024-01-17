@@ -10,7 +10,7 @@ newtype Sender = Sender String deriving (Eq, Show)
 newtype Content = Content String deriving (Eq, Show)
 
 -- | Represents the username of a user in the social network.
-newtype Username = Username String deriving (Eq, Show)
+newtype Username = Username String deriving (Eq, Ord, Show)
 
 -- | Represents a question asked to the user.
 newtype Question = Question String deriving (Eq, Show)
